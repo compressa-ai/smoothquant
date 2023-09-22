@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 import torch
 import os
 
@@ -11,7 +13,7 @@ from smoothquant.calibration import get_act_scales
 
 def build_model_and_tokenizer(model_name):
     tokenizer = AutoTokenizer.from_pretrained(model_name, model_max_length=512)
-    kwargs = {"torch_dtype": torch.float16, "device_map": "sequential"}
+    kwargs = {"torch_dtype": torch.float16, "device_map": "cuda:0"}
     model = AutoModelForCausalLM.from_pretrained(model_name, **kwargs)
     return model, tokenizer
 
