@@ -9,6 +9,7 @@ from transformers import (
 )
 import argparse
 
+from datasets import load_dataset
 from smoothquant.calibration import get_act_scales
 
 def build_model_and_tokenizer(model_name):
@@ -63,8 +64,12 @@ def main():
 #        print('You can download the validation dataset of the Pile at https://mystic.the-eye.eu/public/AI/pile/val.jsonl.zst')
 #        raise FileNotFoundError
 
-    act_scales = get_act_scales(model, tokenizer, args.dataset_path,
+    dataset = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train')
+
+    act_scales = get_act_scales(model, tokenizer, dataset,
                                 args.num_samples, args.seq_len)
+    #act_scales = get_act_scales(model, tokenizer, args.dataset_path,
+                                #args.num_samples, args.seq_len)
 
     os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
     torch.save(act_scales, args.output_path)
